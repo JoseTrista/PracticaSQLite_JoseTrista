@@ -16,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Sort
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -24,6 +26,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -110,6 +114,29 @@ fun NoteItem(
     index: Int,
     onEvent: (NotesEvent) -> Unit
 ) {
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { setShowDialog(false) },
+            title = { Text("Eliminar Nota") },
+            text = { Text("¿Quieres eliminar esta nota?") },
+            confirmButton = {
+                Button(onClick = {
+                    onEvent(NotesEvent.DeleteNote(state.notes[index]))
+                    setShowDialog(false)
+                }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { setShowDialog(false) }) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -139,18 +166,14 @@ fun NoteItem(
         }
 
         IconButton(
-            onClick = {
-                onEvent(NotesEvent.DeleteNote(state.notes[index]))
-            }
+            onClick = { setShowDialog(true) } // Ajusta el evento onClick para mostrar el diálogo
         ) {
-
             Icon(
                 imageVector = Icons.Rounded.Delete,
                 contentDescription = "Delete Note",
                 modifier = Modifier.size(35.dp),
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
-
         }
 
     }

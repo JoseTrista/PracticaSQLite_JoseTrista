@@ -8,5 +8,8 @@ data class NoteState(
 
     val notes: List<Note> = emptyList(),
     val title: MutableState<String> = mutableStateOf(""),
-    val description: MutableState<String> = mutableStateOf("")
+    val description: MutableState<String> = mutableStateOf(""),
+    val titleError: MutableState<String?> = mutableStateOf(null),
+    val descriptionError: MutableState<String?> = mutableStateOf(null),
+    val noteSaved: Boolean = false
 )
